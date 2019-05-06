@@ -1,0 +1,118 @@
+
+task hello{
+	doLast{
+		println'Hello World,Gavin.'
+	}
+}
+
+task helloWorld{
+	doLast{
+		println'Hello World last.'
+	}
+}
+
+task printStringClass {
+    def strl = '单引号'
+    def str2 = "双引号"
+
+    println "单引号定义的字符串类型："+ strl.getClass().name
+    println "双引号定义的字符串类型："+ strl.getClass().name
+}
+
+task printStringVar {
+    def var = 'Gavin'
+
+    println '单引号的变量计算：${var}'
+    println "双引号的变量计算：${var}"
+}
+
+task printList {
+    //我们定义一个由逗号分隔、方括号包围的列表号，并将该List分配给一个变量
+    def numbers = [1, 2, 3, 4, 5, 6]   
+    //该集合是Java的Java.util.List的实例     
+    println "List type:" + numbers.getClass().name
+    //可以使用size()方法查询List的长度
+    println "List size:" + numbers.size()
+    //获取索引第二位的元素
+    println "List index 2:" + numbers[1]
+    //获取索引最后一位的元素
+    println "List index the last one:" + numbers[-1]
+    //获取索引倒数第二位的元素
+    println "List index the second-to-last:" + numbers[-2]
+    //获取索引1和3的元素集合
+    println "List index 1 and index3 : ${numbers[1,3]}"
+    //获取索引2~4的元素集合
+    println "List index 2~4 : ${numbers[2..4]}"
+
+    numbers.each{
+	println it
+    }
+}
+
+task printMap {
+    def map = ['name': 'Gromit', 'likes': 'cheese', 'id': 1234]
+    //该集合是Java的java.util.LinkedHashMap的实例     
+    println "Map type : ${map.getClass().name}"
+    //通过size()过去Map长度
+    println "Map size : ${map.size()}"
+    //通过映射关系来获取指定key的value值
+    println "Map name : ${map.name}"
+    //通过类似数组的方法来获取指定key的value值
+    println "Map likes : ${map['likes']}"
+    //通过get方法来获取指定key的value值
+    println "Map id : ${map.get("id")}"
+    
+    //遍历Map 可以通过key和value属性获取每个元素的key和value
+    //只不过被送代的元素是一个Map.Entry的实例
+    map.each {
+	println "Key:${it.key}, Value:${it.value}"
+    }
+}
+
+task printMethod {
+    methodPlus 1,2
+    methodPlus(1,2)
+}
+
+//方法使用上的简洁
+task invokeMethod {
+    methodPlus(1,2)
+    //在Groovy中更加简洁的用法 省略括号
+    methodPlus 1,2
+    def add1 = method2 2,3
+    def add2 = method2 5,4
+    println "max value : " + add1
+    println "max value : " + add2
+}
+
+def methodPlus(int a, int b){
+    println a+b
+}
+
+//return 可以省略
+def method2(int a, int b){
+    if(a > b){
+	a
+    }else{
+	b
+    }
+}
+
+//代码块 可以当作参数传递
+task invokeTraverse {
+    def numbers = [1, 2, 3, 4, 5, 6]
+    //普通的写法
+    numbers.each(
+	{
+		println it
+	}
+    )
+    //Groovy规定如果方法最后一个参数是代码块，可以放到方法外面
+    numbers.each(){
+	println it
+    }
+    //最后方法括号可以省略，最后可以精简成
+    numbers.each{
+	println it
+    }
+}
