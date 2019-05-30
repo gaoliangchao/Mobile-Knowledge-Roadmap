@@ -1,0 +1,62 @@
+task customTask1 {
+   doFirst {
+	println 'customTask1 : first'
+   }
+   doLast {
+	println 'customTask1 : last'
+   }
+}
+
+task predecessorTask << {
+   println "predecessor task execute."
+}
+
+task postpositionTask(dependsOn: predecessorTask){
+   doLast{
+       println "postposition task execute."
+   }
+}
+
+task exTask1 << {
+	println 'execute task1'
+}
+
+task exTask2 << {
+	println 'execute task2'
+}
+
+task exMultiTask{
+	dependsOn exTask1,exTask2
+	doLast{
+		print 'execute multi-task' 
+	}
+}
+
+task demoTask << {
+	println 'execute demo task'
+}
+
+demoTask.doFirst {
+	println 'do Frist'
+}
+
+demoTask.doLast {
+	println project.hasProperty('demoTask')
+	println 'do Last' 
+}
+
+
+//自定义一个Project参数
+ext.age = 18
+
+//通过代码块同时设置多个属性
+ext {
+	phone = "130xxxxxxxx"
+	address = "Tianjin xxx"
+}
+
+task extTask {
+	println "AgeL : ${age}"
+	println "Phone Number : ${phone}"
+	println "Address : ${address}"
+}

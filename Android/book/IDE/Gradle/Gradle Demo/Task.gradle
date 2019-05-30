@@ -1,0 +1,102 @@
+
+//使用任务名字创建任务
+def Task createTask1 = task(createTask1)
+
+createTask1.doLast {
+	println "Create method : task(String name)"
+}
+
+//使用任务名字＋任务配置的Map对象来创建任务
+def Task createTask2 = task(createTask2,group:BasePlugin.BUILD_GROUP)
+
+createTask2.doLast {
+	println "Create method : task(String name, Map<String,?> args)"
+}
+
+//使用任务名字＋闭包来创建任务
+task createTask3 {
+	description 'Create Task Demo 3'
+	doLast {
+		println "Create method : task(String name, Closure configureClosure)"
+		println "task description : ${description}"
+	}
+}
+
+//使用TaskContainer来创建任务
+tasks.create('createTask4') {
+	description 'Create Task Demo 4'
+	doLast {
+		println "Create method : Task create(String name, Closure configureClosure) throws InvalidUserDataException"
+		println "task description : ${description}"
+	}
+}
+
+def Task groupTask = task(groupTask)
+
+groupTask.group = BasePlugin.BUILD_GROUP
+groupTask.description = "This is a guided task"
+groupTask.doLast {
+	println "group:${group},description:${description}"
+}
+
+//任务排序
+
+task firstTask << {
+	println "firstTask execute"
+}
+
+task secondTask << {
+	println "secondTask execute"
+}
+firstTask.mustRunAfter(secondTask)
+
+
+//任务的onlyIf断言
+final String BUILD_APPS_ALL = "all"
+final String BUILD_APPS_ONLY_ONE = "only_one"
+final String BUILD_APPS_ONLY_TWO = "only_two"
+
+task exOneTask << {
+	println "package one"
+}
+
+task exTwoTask << {
+	println "package two"
+}
+
+task build {
+	group BasePlugin.BUILD_GROUP
+	description " package channl apk"
+}
+
+build.dependsOn exOneTask,exTwoTask
+
+exOneTask.onlyIf {
+	def execute = false
+	if(project.hasProperty("build_apps")){
+	   Object buildApps = project.property("build_apps")
+	   if(BUILD_APPS_ONLY_ONE.equals(buildApps) || BUILD_APPS_ALL.equals(buildApps)){
+	   	execute = true
+	   }else{
+		execute = false
+	   }
+	}else {
+	   execute = true
+	}
+	execute
+}
+
+exTwoTask.onlyIf {
+	def execute = false
+	if(project.hasProperty("build_apps")){
+	   Object buildApps = project.property("build_apps")
+	   if(BUILD_APPS_ONLY_TWO.equals(buildApps) || BUILD_APPS_ALL.equals(buildApps)){
+	   	execute = true
+	   }else{
+		execute = false
+	   }
+	}else {
+	   execute = true
+	}
+	execute
+}

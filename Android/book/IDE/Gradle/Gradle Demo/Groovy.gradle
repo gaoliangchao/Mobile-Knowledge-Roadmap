@@ -1,4 +1,3 @@
-
 task hello{
 	doLast{
 		println'Hello World,Gavin.'
@@ -114,5 +113,61 @@ task invokeTraverse {
     //最后方法括号可以省略，最后可以精简成
     numbers.each{
 	println it
+    }
+}
+
+//Single parameters
+task helloClosure << {
+    println 'helloClosure'
+    customEach {
+	println it
+    }
+}
+
+def customEach (closure) {
+    //模拟一个有10 个元素的集合，开始迭代
+    for (int i in 5..15) {
+	closure(i)
+    }
+}
+
+// Multiple parameters
+task helloClosure2 << {
+    eachMap{k,v ->
+        println "${k} is ${v}"
+    }
+}
+
+def eachMap(closure){
+    def map1 = ["name":"Gavin","age":18]
+    map1.each {
+	closure(it.key,it.value)
+    }
+} 
+
+// Enclosing delegate Demo
+task helloDelegate << {
+    new Delegate().test {
+	println "thisObject:${thisObject.getClass()}"
+	println "owner:${owner.getClass()}"
+	println "delegate:${delegate.getClass()}"
+	methodl ()
+	it.methodl ()
+    }
+}
+
+def method1() {
+    println "Context this:${this.getClass()} in root"
+    println "method1 in root"
+}
+
+class Delegate {
+    def method1() {
+	println "Delegate this:${this.getClass()} in Delegate"
+	println "method1 in Delegate"
+    }
+
+    def test(Closure<Closure> closure) {
+	closure(this)
     }
 }
